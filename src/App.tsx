@@ -1,7 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
-import Auth from './pages/Auth';
+import Login from './pages/Login';
+import SignUp from './pages/SignUp';
 import Todo from './pages/Todo';
 
 function App() {
@@ -9,7 +10,8 @@ function App() {
 		<BrowserRouter>
 			<Routes>
 				<Route path='/' element={<Todo />} />
-				<Route path='/auth' element={<Auth />} />
+				<Route path='/login' element={<Login />} />
+				<Route path='/signup' element={<SignUp />} />
 			</Routes>
 		</BrowserRouter>
 	);
