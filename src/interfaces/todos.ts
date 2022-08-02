@@ -10,4 +10,15 @@ export interface Todo {
 	updatedAt: string;
 }
 
+export interface CreateTodoRes {
+	data: Todo;
+}
+
 export type Todos = Array<Todo>;
+
+export interface CreateTodoParams {
+	title: string;
+	content: string;
+}
+
+export type CreateTodo = (params: CreateTodoParams) => Promise<TodoRes>;
