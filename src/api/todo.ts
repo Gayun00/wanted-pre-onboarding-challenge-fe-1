@@ -1,4 +1,4 @@
-import { CreateTodoRes, TodoRes } from 'interfaces/todos';
+import { CreateTodoParams, CreateTodoRes, TodoRes } from 'interfaces/todos';
 import { SERVER_URL } from 'utils/constants';
 
 const token = localStorage.getItem('token')! as string;
@@ -20,7 +20,7 @@ export const fetchTodo = async (): Promise<TodoRes> => {
 export const createTodo = async (
 	title: string | number | undefined,
 	content: string | number | undefined
-): Promise<CreateTodoRes> => {
+): Promise<CreateTodoParams> => {
 	const res = await fetch(`${SERVER_URL}/todos`, {
 		method: 'post',
 		headers: {

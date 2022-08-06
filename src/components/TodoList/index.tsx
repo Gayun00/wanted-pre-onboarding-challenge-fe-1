@@ -1,38 +1,26 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
-	QueryClient,
 	useMutation,
 	UseMutationResult,
 	useQuery,
-	useQueryClient,
 } from '@tanstack/react-query';
 import { createTodo, fetchTodo } from 'api/todo';
 import { CreateTodoParams, Todo, TodoRes } from 'interfaces/todos';
 import './index.css';
-import { SERVER_URL } from 'utils/constants';
-import axios from 'axios';
 
 function TodoList() {
-	const queryClient = new QueryClient();
 	const inputRef = useRef<HTMLInputElement>(null);
 	const { data } = useQuery<TodoRes, Error>(['todo'], fetchTodo);
-	const token = localStorage.getItem('token')! as string;
 
-	const mutation = useMutation((title: string) => {
-		return axios.post(
-			`${SERVER_URL}/todos`,
-			{ title: title },
-			{
-				headers: {
-					'Content-type': 'application/json',
-					Authorization: token,
-				},
-			}
+	const mutation: UseMutationResult<CreateTodoParams, Error, CreateTodoParams> =
+		useMutation<CreateTodoParams, Error, CreateTodoParams>(
+			async ({ title, content }) => createTodo(title, content)
 		);
-	});
-	const addTodo = () => {
-		mutation.mutate('새로운 할 일');
+
+	const addTodo = (title: string, content: string) => {
+		mutation.mutate({ title, content });
 	};
+
 	return (
 		<div className='todo_list'>
 			<div className='input_container'>
@@ -43,7 +31,12 @@ function TodoList() {
 					placeholder='add your todo'
 					ref={inputRef}
 				/>
-				<button onClick={addTodo}>Add</button>
+				<button
+					onClick={() => {
+						addTodo(inputRef?.current?.value as string, '새 할일 설명');
+					}}>
+					Add
+				</button>
 			</div>
 			<ul>
 				{data?.data?.map((todo: Todo) => (
