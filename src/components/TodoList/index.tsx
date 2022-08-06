@@ -14,7 +14,7 @@ import {
 } from 'interfaces/todos';
 import './index.css';
 
-function TodoList() {
+function TodoList({ setSelectedTodo }: any) {
 	const queryClient = useQueryClient();
 	const inputRef = useRef<HTMLInputElement>(null);
 	const { data } = useQuery<TodoRes, Error>(['todo'], fetchTodo);
@@ -53,6 +53,13 @@ function TodoList() {
 		deleteTodoMutation.mutate({ id });
 	};
 
+	const onClickTodo = (title: string, content: string) => {
+		setSelectedTodo({
+			title,
+			content,
+		});
+	};
+
 	return (
 		<div className='todo_list'>
 			<div className='input_container'>
@@ -72,7 +79,9 @@ function TodoList() {
 			</div>
 			<ul>
 				{data?.data?.map((todo: Todo) => (
-					<li key={todo.id}>
+					<li
+						key={todo.id}
+						onClick={() => onClickTodo(todo.title, todo.content)}>
 						<p>{todo.title}</p>
 						<button onClick={() => onClickDelete(todo.id)}>x</button>
 					</li>
