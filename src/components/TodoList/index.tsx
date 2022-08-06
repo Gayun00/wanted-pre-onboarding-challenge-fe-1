@@ -1,33 +1,38 @@
 import React, { useRef } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { fetchTodo } from 'api/todo';
-import { Todo, TodoRes } from 'interfaces/todos';
+import {
+	QueryClient,
+	useMutation,
+	UseMutationResult,
+	useQuery,
+	useQueryClient,
+} from '@tanstack/react-query';
+import { createTodo, fetchTodo } from 'api/todo';
+import { CreateTodoParams, Todo, TodoRes } from 'interfaces/todos';
 import './index.css';
 import { SERVER_URL } from 'utils/constants';
+import axios from 'axios';
 
 function TodoList() {
+	const queryClient = new QueryClient();
 	const inputRef = useRef<HTMLInputElement>(null);
 	const { data } = useQuery<TodoRes, Error>(['todo'], fetchTodo);
+	const token = localStorage.getItem('token')! as string;
 
-	function handleCreateTodo(
-		title: string | number | undefined,
-		content: string | number | undefined
-	): Promise<TodoRes> {
-		const token = localStorage.getItem('token')! as string;
-
-		return fetch(`${SERVER_URL}/todos`, {
-			method: 'post',
-			headers: {
-				'Content-type': 'application/json',
-				Authorization: token,
-			},
-			body: JSON.stringify({
-				title: title,
-				content: content,
-			}),
-		}).then((response) => response.json());
-	}
-
+	const mutation = useMutation((title: string) => {
+		return axios.post(
+			`${SERVER_URL}/todos`,
+			{ title: title },
+			{
+				headers: {
+					'Content-type': 'application/json',
+					Authorization: token,
+				},
+			}
+		);
+	});
+	const addTodo = () => {
+		mutation.mutate('새로운 할 일');
+	};
 	return (
 		<div className='todo_list'>
 			<div className='input_container'>
@@ -38,7 +43,7 @@ function TodoList() {
 					placeholder='add your todo'
 					ref={inputRef}
 				/>
-				<button onClick={() => handleCreateTodo('df', 'sdf')}>Add</button>
+				<button onClick={addTodo}>Add</button>
 			</div>
 			<ul>
 				{data?.data?.map((todo: Todo) => (
