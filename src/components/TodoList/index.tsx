@@ -5,16 +5,17 @@ import {
 	useQuery,
 	useQueryClient,
 } from '@tanstack/react-query';
-import { createTodo, fetchTodo, deleteTodo } from 'api/todo';
+import { createTodo, fetchTodo, deleteTodo, updateTodo } from 'api/todo';
 import {
 	CreateTodoParams,
 	DeleteTodoParams,
 	Todo,
 	TodoRes,
+	UpdateTodoParams,
 } from 'interfaces/todos';
 import './index.css';
 
-function TodoList({ setSelectedTodo }: any) {
+function TodoList({ setSelectedTodo, selectedTodo }: any) {
 	const queryClient = useQueryClient();
 	const inputRef = useRef<HTMLInputElement>(null);
 	const { data } = useQuery<TodoRes, Error>(['todo'], fetchTodo);
@@ -49,15 +50,36 @@ function TodoList({ setSelectedTodo }: any) {
 		}
 	);
 
+	const updateTodoMutation: UseMutationResult<
+		UpdateTodoParams,
+		Error,
+		UpdateTodoParams
+	> = useMutation<UpdateTodoParams, Error, UpdateTodoParams>(
+		async ({ id, title, content }) => updateTodo(id, title, content),
+		{
+			onSuccess: (data) => {
+				queryClient.invalidateQueries(['todo']);
+				console.log(data);
+			},
+		}
+	);
 	const onClickDelete = (id: string) => {
 		deleteTodoMutation.mutate({ id });
 	};
+	const onClickUpdate = (id: string, title: string, content: string) => {
+		updateTodoMutation.mutate({ id, title, content });
+	};
 
-	const onClickTodo = (title: string, content: string) => {
+	const onClickTodo = (id: string, title: string, content: string) => {
 		setSelectedTodo({
+			id,
 			title,
 			content,
 		});
+	};
+
+	const onChangeInput = () => {
+		//
 	};
 
 	return (
@@ -81,8 +103,18 @@ function TodoList({ setSelectedTodo }: any) {
 				{data?.data?.map((todo: Todo) => (
 					<li
 						key={todo.id}
-						onClick={() => onClickTodo(todo.title, todo.content)}>
-						<p>{todo.title}</p>
+						onClick={() => onClickTodo(todo.id, todo.title, todo.content)}>
+						{todo.id === selectedTodo.id ? (
+							<input
+								type='text'
+								value={todo.title}
+								onChange={(e) =>
+									onClickUpdate(todo.id, e.target.value, todo.content)
+								}
+							/>
+						) : (
+							<p>{todo.title}</p>
+						)}
 						<button onClick={() => onClickDelete(todo.id)}>x</button>
 					</li>
 				))}

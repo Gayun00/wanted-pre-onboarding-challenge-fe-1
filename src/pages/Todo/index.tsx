@@ -14,7 +14,7 @@ function TodoContainer() {
 	});
 	return (
 		<div className='todo-wrapper'>
-			<TodoList setSelectedTodo={setSelectedTodo} />
+			<TodoList setSelectedTodo={setSelectedTodo} selectedTodo={selectedTodo} />
 			<TodoDetail selectedTodo={selectedTodo} />
 		</div>
 	);

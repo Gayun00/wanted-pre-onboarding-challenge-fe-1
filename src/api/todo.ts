@@ -1,4 +1,9 @@
-import { CreateTodoParams, DeleteTodoParams, TodoRes } from 'interfaces/todos';
+import {
+	CreateTodoParams,
+	DeleteTodoParams,
+	TodoRes,
+	UpdateTodoParams,
+} from 'interfaces/todos';
 import { SERVER_URL } from 'utils/constants';
 
 const token = localStorage.getItem('token')! as string;
@@ -43,6 +48,17 @@ export const createTodo = async (
 	content: string | number | undefined
 ): Promise<CreateTodoParams> => {
 	return fetchRequest('/todos', 'post', {
+		title: title,
+		content: content,
+	});
+};
+
+export const updateTodo = async (
+	id: string,
+	title: string | number | undefined,
+	content: string | number | undefined
+): Promise<UpdateTodoParams> => {
+	return fetchRequest(`/todos/${id}`, 'put', {
 		title: title,
 		content: content,
 	});

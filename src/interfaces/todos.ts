@@ -21,6 +21,12 @@ export interface CreateTodoParams {
 	content: string;
 }
 
+export interface UpdateTodoParams {
+	id: string;
+	title: string;
+	content: string;
+}
+
 export interface DeleteTodoParams {
 	id: string;
 }
