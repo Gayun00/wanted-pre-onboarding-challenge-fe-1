@@ -3,22 +3,54 @@ import {
 	useMutation,
 	UseMutationResult,
 	useQuery,
+	useQueryClient,
 } from '@tanstack/react-query';
-import { createTodo, fetchTodo } from 'api/todo';
-import { CreateTodoParams, Todo, TodoRes } from 'interfaces/todos';
+import { createTodo, fetchTodo, deleteTodo } from 'api/todo';
+import {
+	CreateTodoParams,
+	DeleteTodoParams,
+	Todo,
+	TodoRes,
+} from 'interfaces/todos';
 import './index.css';
 
 function TodoList() {
+	const queryClient = useQueryClient();
 	const inputRef = useRef<HTMLInputElement>(null);
 	const { data } = useQuery<TodoRes, Error>(['todo'], fetchTodo);
 
-	const mutation: UseMutationResult<CreateTodoParams, Error, CreateTodoParams> =
-		useMutation<CreateTodoParams, Error, CreateTodoParams>(
-			async ({ title, content }) => createTodo(title, content)
-		);
+	const addTodoMutation: UseMutationResult<
+		CreateTodoParams,
+		Error,
+		CreateTodoParams
+	> = useMutation<CreateTodoParams, Error, CreateTodoParams>(
+		async ({ title, content }) => createTodo(title, content),
+		{
+			onSuccess: () => {
+				queryClient.invalidateQueries(['todo']);
+			},
+		}
+	);
 
 	const addTodo = (title: string, content: string) => {
-		mutation.mutate({ title, content });
+		addTodoMutation.mutate({ title, content });
+	};
+
+	const deleteTodoMutation: UseMutationResult<
+		DeleteTodoParams,
+		Error,
+		DeleteTodoParams
+	> = useMutation<DeleteTodoParams, Error, DeleteTodoParams>(
+		async ({ id }) => deleteTodo(id),
+		{
+			onSuccess: () => {
+				queryClient.invalidateQueries(['todo']);
+			},
+		}
+	);
+
+	const onClickDelete = (id: string) => {
+		deleteTodoMutation.mutate({ id });
 	};
 
 	return (
@@ -40,7 +72,10 @@ function TodoList() {
 			</div>
 			<ul>
 				{data?.data?.map((todo: Todo) => (
-					<li key={todo.id}>{todo.title}</li>
+					<li key={todo.id}>
+						<p>{todo.title}</p>
+						<button onClick={() => onClickDelete(todo.id)}>x</button>
+					</li>
 				))}
 			</ul>
 		</div>

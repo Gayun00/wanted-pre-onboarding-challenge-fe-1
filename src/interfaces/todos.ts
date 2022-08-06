@@ -21,4 +21,8 @@ export interface CreateTodoParams {
 	content: string;
 }
 
+export interface DeleteTodoParams {
+	id: string;
+}
+
 export type CreateTodo = (params: CreateTodoParams) => Promise<TodoRes>;
