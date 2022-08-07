@@ -1,7 +1,15 @@
+import {
+	useMutation,
+	UseMutationResult,
+	useQueryClient,
+} from '@tanstack/react-query';
+import { signup } from 'api/todo';
+import { SignUpParams } from 'interfaces/todos';
 import React, { useState } from 'react';
 import './index.css';
 
 function SignUp() {
+	const queryClient = useQueryClient();
 	const [password, setPassword] = useState('');
 	const [email, setEmail] = useState('');
 
@@ -11,17 +19,22 @@ function SignUp() {
 		return isEmailValid && isPasswordValid;
 	};
 
-	const handleSignUp = () => {
-		fetch('http://localhost:8080/users/create', {
-			method: 'post',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				email: email,
-				password: password,
-			}),
-		});
+	const signUpMutation: UseMutationResult<SignUpParams, Error, SignUpParams> =
+		useMutation<SignUpParams, Error, SignUpParams>(
+			async ({ email, password }) => signup(email, password),
+			{
+				onSuccess: (data) => {
+					// queryClient.invalidateQueries(['todo']);
+					console.log(data);
+				},
+				onError: (error) => {
+					console.log(error);
+				},
+			}
+		);
+
+	const onClickSignUp = () => {
+		signUpMutation.mutate({ email, password });
 	};
 
 	return (
@@ -29,18 +42,18 @@ function SignUp() {
 			<input
 				type='email'
 				name='email'
-				id=''
+				id='email'
 				onChange={(e) => setEmail(e.target.value)}
 			/>
 			<input
 				type='password'
 				name='password'
-				id=''
+				id='password'
 				onChange={(e) => setPassword(e.target.value)}
 			/>
 			<button
 				className={`signup_button ${validateSignup() && 'isValid'}`}
-				onClick={handleSignUp}>
+				onClick={onClickSignUp}>
 				Submit
 			</button>
 		</div>

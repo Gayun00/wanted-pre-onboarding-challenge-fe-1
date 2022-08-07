@@ -1,6 +1,8 @@
 import {
 	CreateTodoParams,
 	DeleteTodoParams,
+	LoginRes,
+	SignUpParams,
 	TodoRes,
 	UpdateTodoParams,
 } from 'interfaces/todos';
@@ -48,8 +50,8 @@ export const createTodo = async (
 	content: string | number | undefined
 ): Promise<CreateTodoParams> => {
 	return fetchRequest('/todos', 'post', {
-		title: title,
-		content: content,
+		title,
+		content,
 	});
 };
 
@@ -59,11 +61,31 @@ export const updateTodo = async (
 	content: string | number | undefined
 ): Promise<UpdateTodoParams> => {
 	return fetchRequest(`/todos/${id}`, 'put', {
-		title: title,
-		content: content,
+		title,
+		content,
 	});
 };
 
 export const deleteTodo = async (id: string): Promise<DeleteTodoParams> => {
 	return fetchRequest(`/todos/${id}`, 'delete');
+};
+
+export const signup = async (
+	email: string | undefined,
+	password: string | undefined
+): Promise<SignUpParams> => {
+	return fetchRequest(`/users/create`, 'post', {
+		email,
+		password,
+	});
+};
+
+export const login = async (
+	email: string | undefined,
+	password: string | undefined
+): Promise<LoginRes> => {
+	return fetchRequest(`/users/login`, 'post', {
+		email,
+		password,
+	});
 };

@@ -32,3 +32,18 @@ export interface DeleteTodoParams {
 }
 
 export type CreateTodo = (params: CreateTodoParams) => Promise<TodoRes>;
+
+export interface SignUpParams {
+	email: string;
+	password: string;
+}
+
+export interface LoginParams {
+	email: string;
+	password: string;
+}
+
+export interface LoginRes {
+	message: string;
+	token: string;
+}

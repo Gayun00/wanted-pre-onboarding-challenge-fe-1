@@ -78,10 +78,6 @@ function TodoList({ setSelectedTodo, selectedTodo }: any) {
 		});
 	};
 
-	const onChangeInput = () => {
-		//
-	};
-
 	return (
 		<div className='todo_list'>
 			<div className='input_container'>

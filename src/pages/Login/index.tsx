@@ -1,4 +1,8 @@
+import { useMutation, UseMutationResult } from '@tanstack/react-query';
+import { login } from 'api/todo';
+import { LoginParams, LoginRes } from 'interfaces/todos';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface LoginResponse {
 	message: string;
@@ -6,6 +10,7 @@ interface LoginResponse {
 }
 
 function Login() {
+	const navigate = useNavigate();
 	const [password, setPassword] = useState('');
 	const [email, setEmail] = useState('');
 
@@ -15,19 +20,24 @@ function Login() {
 		return isEmailValid && isPasswordValid;
 	};
 
-	const handleLogin = () => {
-		fetch('http://localhost:8080/users/login', {
-			method: 'post',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				email: email,
-				password: password,
-			}),
-		}).then((res) => {
-			res.json();
-		});
+	const loginMutation: UseMutationResult<LoginRes, Error, LoginParams> =
+		useMutation<LoginRes, Error, LoginParams>(
+			['login'],
+			async ({ email, password }) => login(email, password),
+			{
+				onSuccess: (data: LoginRes, _variables: LoginParams) => {
+					localStorage.setItem('token', data.token);
+					console.log(data);
+				},
+				onError: (error) => {
+					alert('로그인에 실패했습니다.');
+					navigate('/');
+				},
+			}
+		);
+
+	const onClickLogin = () => {
+		loginMutation.mutate({ email, password });
 	};
 
 	return (
@@ -46,7 +56,7 @@ function Login() {
 			/>
 			<button
 				className={`login_button ${validateLogin() && 'isValid'}`}
-				onClick={handleLogin}>
+				onClick={onClickLogin}>
 				Submit
 			</button>
 		</div>
