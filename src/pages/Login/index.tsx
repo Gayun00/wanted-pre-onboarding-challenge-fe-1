@@ -49,6 +49,7 @@ function Login() {
 				onChange={(e) => setPassword(e.target.value)}
 			/>
 			<button
+				disabled={!validateLogin()}
 				className={`login_button ${validateLogin() && 'isValid'}`}
 				onClick={onClickLogin}>
 				Submit
