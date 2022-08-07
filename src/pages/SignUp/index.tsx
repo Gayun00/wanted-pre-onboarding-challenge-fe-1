@@ -5,11 +5,10 @@ import {
 	useQueryClient,
 } from '@tanstack/react-query';
 import { signup } from 'api/todo';
-import { SignUpParams } from 'interfaces/todos';
+import { SignUpParams, UserRes } from 'interfaces/todos';
 import './index.css';
 
 function SignUp() {
-	const queryClient = useQueryClient();
 	const [password, setPassword] = useState('');
 	const [email, setEmail] = useState('');
 
@@ -19,8 +18,8 @@ function SignUp() {
 		return isEmailValid && isPasswordValid;
 	};
 
-	const signUpMutation: UseMutationResult<SignUpParams, Error, SignUpParams> =
-		useMutation<SignUpParams, Error, SignUpParams>(
+	const signUpMutation: UseMutationResult<UserRes, Error, SignUpParams> =
+		useMutation<UserRes, Error, SignUpParams>(
 			async ({ email, password }) => signup(email, password),
 			{
 				onSuccess: () => {

@@ -47,7 +47,7 @@ export interface LoginParams {
 	password: string;
 }
 
-export interface LoginRes {
+export interface UserRes {
 	message: string;
 	token: string;
 }

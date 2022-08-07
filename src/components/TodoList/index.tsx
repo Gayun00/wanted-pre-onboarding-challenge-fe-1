@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import {
 	useMutation,
 	UseMutationResult,
@@ -20,28 +20,25 @@ function TodoList({ setSelectedTodo, selectedTodo }: any) {
 	const inputRef = useRef<HTMLInputElement>(null);
 	const { data } = useQuery<TodoRes, Error>(['todo'], fetchTodo);
 
-	const addTodoMutation: UseMutationResult<
-		CreateTodoParams,
-		Error,
-		CreateTodoParams
-	> = useMutation<CreateTodoParams, Error, CreateTodoParams>(
-		async ({ title, content }) => createTodo(title, content),
-		{
-			onSuccess: () => {
-				queryClient.invalidateQueries(['todo']);
-			},
-		}
-	);
+	const addTodoMutation: UseMutationResult<TodoRes, Error, CreateTodoParams> =
+		useMutation<TodoRes, Error, CreateTodoParams>(
+			async ({ title, content }) => createTodo(title, content),
+			{
+				onSuccess: () => {
+					queryClient.invalidateQueries(['todo']);
+				},
+			}
+		);
 
 	const addTodo = (title: string, content: string) => {
 		addTodoMutation.mutate({ title, content });
 	};
 
 	const deleteTodoMutation: UseMutationResult<
-		DeleteTodoParams,
+		TodoRes,
 		Error,
 		DeleteTodoParams
-	> = useMutation<DeleteTodoParams, Error, DeleteTodoParams>(
+	> = useMutation<TodoRes, Error, DeleteTodoParams>(
 		async ({ id }) => deleteTodo(id),
 		{
 			onSuccess: () => {
@@ -51,15 +48,14 @@ function TodoList({ setSelectedTodo, selectedTodo }: any) {
 	);
 
 	const updateTodoMutation: UseMutationResult<
-		UpdateTodoParams,
+		TodoRes,
 		Error,
 		UpdateTodoParams
-	> = useMutation<UpdateTodoParams, Error, UpdateTodoParams>(
+	> = useMutation<TodoRes, Error, UpdateTodoParams>(
 		async ({ id, title, content }) => updateTodo(id, title, content),
 		{
-			onSuccess: (data) => {
+			onSuccess: () => {
 				queryClient.invalidateQueries(['todo']);
-				data;
 			},
 		}
 	);
@@ -97,13 +93,20 @@ function TodoList({ setSelectedTodo, selectedTodo }: any) {
 				{data?.data?.map((todo: Todo) => (
 					<li key={todo.id} onClick={() => onClickTodo(todo.id)}>
 						{todo.id === selectedTodo.id ? (
-							<input
-								type='text'
-								value={todo.title}
-								onChange={(e) =>
-									onClickUpdate(todo.id, e.target.value, todo.content)
-								}
-							/>
+							<>
+								<input type='text' value={todo.title} />
+								<button
+									onClick={() =>
+										onClickUpdate(
+											todo.id,
+											inputRef?.current?.value as string,
+											todo.content
+										)
+									}>
+									변경
+								</button>
+								<button>취소</button>
+							</>
 						) : (
 							<p>{todo.title}</p>
 						)}

@@ -1,11 +1,4 @@
-import {
-	CreateTodoParams,
-	DeleteTodoParams,
-	LoginRes,
-	SignUpParams,
-	TodoRes,
-	UpdateTodoParams,
-} from 'interfaces/todos';
+import { TodoRes, UserRes } from 'interfaces/todos';
 import { SERVER_URL } from 'utils/constants';
 
 const token = localStorage.getItem('token')! as string;
@@ -54,7 +47,7 @@ export const getTodoById = async (id: string): Promise<TodoRes> => {
 export const createTodo = async (
 	title: string | number | undefined,
 	content: string | number | undefined
-): Promise<CreateTodoParams> => {
+): Promise<TodoRes> => {
 	return fetchRequest('/todos', 'post', {
 		title,
 		content,
@@ -65,21 +58,21 @@ export const updateTodo = async (
 	id: string,
 	title: string | number | undefined,
 	content: string | number | undefined
-): Promise<UpdateTodoParams> => {
+): Promise<TodoRes> => {
 	return fetchRequest(`/todos/${id}`, 'put', {
 		title,
 		content,
 	});
 };
 
-export const deleteTodo = async (id: string): Promise<DeleteTodoParams> => {
+export const deleteTodo = async (id: string): Promise<TodoRes> => {
 	return fetchRequest(`/todos/${id}`, 'delete');
 };
 
 export const signup = async (
 	email: string | undefined,
 	password: string | undefined
-): Promise<SignUpParams> => {
+): Promise<UserRes> => {
 	return fetchRequest(`/users/create`, 'post', {
 		email,
 		password,
@@ -89,7 +82,7 @@ export const signup = async (
 export const login = async (
 	email: string | undefined,
 	password: string | undefined
-): Promise<LoginRes> => {
+): Promise<UserRes> => {
 	return fetchRequest(`/users/login`, 'post', {
 		email,
 		password,

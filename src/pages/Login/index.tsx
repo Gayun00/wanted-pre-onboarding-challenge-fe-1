@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation, UseMutationResult } from '@tanstack/react-query';
 import { login } from 'api/todo';
-import { LoginParams, LoginRes } from 'interfaces/todos';
+import { LoginParams, UserRes } from 'interfaces/todos';
 import { useNavigate } from 'react-router-dom';
 
 function Login() {
@@ -15,12 +15,12 @@ function Login() {
 		return isEmailValid && isPasswordValid;
 	};
 
-	const loginMutation: UseMutationResult<LoginRes, Error, LoginParams> =
-		useMutation<LoginRes, Error, LoginParams>(
+	const loginMutation: UseMutationResult<UserRes, Error, LoginParams> =
+		useMutation<UserRes, Error, LoginParams>(
 			['login'],
 			async ({ email, password }) => login(email, password),
 			{
-				onSuccess: (data: LoginRes, _variables: LoginParams) => {
+				onSuccess: (data: UserRes, _variables: LoginParams) => {
 					localStorage.setItem('token', data.token);
 				},
 				onError: () => {
