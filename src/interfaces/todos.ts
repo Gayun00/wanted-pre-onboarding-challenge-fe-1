@@ -16,6 +16,10 @@ export interface CreateTodoRes {
 
 export type Todos = Array<Todo>;
 
+export interface GetTodoByIdParams {
+	id: string;
+}
+
 export interface CreateTodoParams {
 	title: string;
 	content: string;
@@ -46,4 +50,8 @@ export interface LoginParams {
 export interface LoginRes {
 	message: string;
 	token: string;
+}
+
+export interface SelectedTodo {
+	id: string;
 }

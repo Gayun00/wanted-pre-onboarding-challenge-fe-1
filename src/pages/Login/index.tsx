@@ -1,13 +1,8 @@
+import React, { useState } from 'react';
 import { useMutation, UseMutationResult } from '@tanstack/react-query';
 import { login } from 'api/todo';
 import { LoginParams, LoginRes } from 'interfaces/todos';
-import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-interface LoginResponse {
-	message: string;
-	token: string;
-}
 
 function Login() {
 	const navigate = useNavigate();
@@ -27,9 +22,8 @@ function Login() {
 			{
 				onSuccess: (data: LoginRes, _variables: LoginParams) => {
 					localStorage.setItem('token', data.token);
-					console.log(data);
 				},
-				onError: (error) => {
+				onError: () => {
 					alert('로그인에 실패했습니다.');
 					navigate('/');
 				},

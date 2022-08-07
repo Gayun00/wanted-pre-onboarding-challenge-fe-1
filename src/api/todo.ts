@@ -11,7 +11,7 @@ import { SERVER_URL } from 'utils/constants';
 const token = localStorage.getItem('token')! as string;
 
 const fetchRequest = async (endpoint: string, method: string, params?: any) => {
-	if (params) {
+	if (method !== 'get') {
 		const res = await fetch(`${SERVER_URL}${endpoint}`, {
 			method: method,
 			headers: {
@@ -43,6 +43,12 @@ const fetchRequest = async (endpoint: string, method: string, params?: any) => {
 
 export const fetchTodo = async (): Promise<TodoRes> => {
 	return fetchRequest('/todos', 'get');
+};
+
+export const getTodoById = async (id: string): Promise<TodoRes> => {
+	return fetchRequest(`/todos/${id}`, 'get', {
+		id,
+	});
 };
 
 export const createTodo = async (

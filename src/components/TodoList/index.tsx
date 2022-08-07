@@ -59,7 +59,7 @@ function TodoList({ setSelectedTodo, selectedTodo }: any) {
 		{
 			onSuccess: (data) => {
 				queryClient.invalidateQueries(['todo']);
-				console.log(data);
+				data;
 			},
 		}
 	);
@@ -70,11 +70,9 @@ function TodoList({ setSelectedTodo, selectedTodo }: any) {
 		updateTodoMutation.mutate({ id, title, content });
 	};
 
-	const onClickTodo = (id: string, title: string, content: string) => {
+	const onClickTodo = (id: string) => {
 		setSelectedTodo({
 			id,
-			title,
-			content,
 		});
 	};
 
@@ -97,9 +95,7 @@ function TodoList({ setSelectedTodo, selectedTodo }: any) {
 			</div>
 			<ul>
 				{data?.data?.map((todo: Todo) => (
-					<li
-						key={todo.id}
-						onClick={() => onClickTodo(todo.id, todo.title, todo.content)}>
+					<li key={todo.id} onClick={() => onClickTodo(todo.id)}>
 						{todo.id === selectedTodo.id ? (
 							<input
 								type='text'

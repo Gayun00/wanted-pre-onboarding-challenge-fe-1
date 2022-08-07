@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
 	useMutation,
 	UseMutationResult,
@@ -5,7 +6,6 @@ import {
 } from '@tanstack/react-query';
 import { signup } from 'api/todo';
 import { SignUpParams } from 'interfaces/todos';
-import React, { useState } from 'react';
 import './index.css';
 
 function SignUp() {
@@ -23,9 +23,8 @@ function SignUp() {
 		useMutation<SignUpParams, Error, SignUpParams>(
 			async ({ email, password }) => signup(email, password),
 			{
-				onSuccess: (data) => {
-					// queryClient.invalidateQueries(['todo']);
-					console.log(data);
+				onSuccess: () => {
+					alert('회원가입이 완료되었습니다.');
 				},
 				onError: (error) => {
 					console.log(error);
